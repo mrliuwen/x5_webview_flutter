@@ -90,7 +90,7 @@ class X5WebViewPlugin(var context: Context, var activity: Activity) : MethodCall
                 QbSdk.canOpenFile(activity, filePath) { canOpenFile ->
                     if (canOpenFile) {
                         QbSdk.openFileReader(activity, filePath, params) { msg ->
-                            result.success(msg)
+                          //  result.success(msg)
                         }
                     } else {
                         Toast.makeText(context, "X5Sdk无法打开此文件", Toast.LENGTH_LONG).show()
