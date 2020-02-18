@@ -1,14 +1,15 @@
+@file:Suppress("INACCESSIBLE_TYPE")
+
 package com.cjx.x5_webview
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.ViewGroup
 import android.widget.Toast
-import com.tencent.smtt.sdk.QbSdk
-import com.tencent.smtt.sdk.TbsListener
-import com.tencent.smtt.sdk.TbsVideo
-import com.tencent.smtt.sdk.WebView
+import com.tencent.smtt.sdk.*
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -17,6 +18,9 @@ import io.flutter.plugin.common.PluginRegistry.Registrar
 import java.io.File
 
 class X5WebViewPlugin(var context: Context, var activity: Activity) : MethodCallHandler {
+
+    private var readerView: TbsReaderView? = null
+
     companion object {
         @JvmStatic
         fun registerWith(registrar: Registrar) {
@@ -89,9 +93,30 @@ class X5WebViewPlugin(var context: Context, var activity: Activity) : MethodCall
                 }
                 QbSdk.canOpenFile(activity, filePath) { canOpenFile ->
                     if (canOpenFile) {
-                        QbSdk.openFileReader(activity, filePath, params) { msg ->
-                          //  result.success(msg)
-                        }
+                        val intent = Intent(activity, FileActivity::class.java)
+                        intent.putExtra("filepath", filePath);
+                        activity.startActivity(intent)
+                        /*    readerView = TbsReaderView(context, this)
+                            readerView!!.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                            //加载文件
+                            val localBundle = Bundle()
+                            localBundle.putString("filePath", filePath);
+                            localBundle.putBoolean("is_bar_show", false);
+                            localBundle.putBoolean("menu_show", false);
+                            localBundle.putBoolean("is_bar_animating", false);
+                            localBundle.putString("tempPath", filePath);
+                            var var3 = com.tencent.smtt.sdk.a.d.c(this.activity)
+                            var3 = var3 or !com.tencent.smtt.sdk.a.d.b(this.activity)
+                            localBundle.putBoolean("browser6.0", var3)
+                            val var4 = 6101625L
+                            val var6 = 610000L
+                            var var8 = com.tencent.smtt.sdk.a.d.a(this.activity, var4, var6)
+                            var8 = var8 or !com.tencent.smtt.sdk.a.d.b(this.activity)
+                            localBundle.putBoolean("browser6.1", var8)
+                            readerView!!.openFile(localBundle);*/
+                        /*    QbSdk.openFileReader(activity, filePath, params) { msg ->
+                              //  result.success(msg)
+                            }*/
                     } else {
                         Toast.makeText(context, "X5Sdk无法打开此文件", Toast.LENGTH_LONG).show()
                         result.success("X5Sdk无法打开此文件")
@@ -130,4 +155,5 @@ class X5WebViewPlugin(var context: Context, var activity: Activity) : MethodCall
             }
         }
     }
+
 }
