@@ -1,5 +1,6 @@
 package com.cjx.x5_webview;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -43,7 +44,13 @@ public class FileActivity extends Activity {
         initTbsReaderView();//用于预览文件5-2
         Intent intent = getIntent();
         filePath = intent.getStringExtra("filepath");
-        Log.d("FileActivityOnCreate", filePath);
+        ActionBar actionBar = getActionBar();
+        String title = "晶盘";
+        try {
+            title = filePath.substring(filePath.lastIndexOf("/") + 1);
+        } catch (Exception e) {
+        }
+        actionBar.setTitle(title);
         displayFile(filePath);
     }
 
@@ -52,7 +59,9 @@ public class FileActivity extends Activity {
         super.onDestroy();
         mTbsReaderView.onStop();//用于预览文件5-5
     }
+
     RelativeLayout rootRl;
+
     //初始化TbsReaderView 5-3
     private void initTbsReaderView() {
         mTbsReaderView = new TbsReaderView(FileActivity.this, new TbsReaderView.ReaderCallback() {
@@ -61,7 +70,7 @@ public class FileActivity extends Activity {
                 //ReaderCallback 接口提供的方法可以不予处理（目前不知道有什么用途，但是一定要实现这个接口类）
             }
         });
-         rootRl = (RelativeLayout) findViewById(R.id.root_layout);
+        rootRl = (RelativeLayout) findViewById(R.id.root_layout);
         rootRl.addView(mTbsReaderView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
     //预览文件5-4
@@ -73,7 +82,7 @@ public class FileActivity extends Activity {
     private void displayFile(String filePath) {
         boolean isCan = false;
         isCan = this.mTbsReaderView.preOpen(parseFormat(filePath), false);
-        Log.d("FileActivity2222", isCan+"");
+        Log.d("FileActivity2222", isCan + "");
         if (isCan) {
             String bsReaderTemp = "/storage/emulated/0/TbsReaderTemp";
             File bsReaderTempFile = new File(bsReaderTemp);
@@ -81,7 +90,7 @@ public class FileActivity extends Activity {
             if (!bsReaderTempFile.exists()) {
                 Log.d("TAG", "准备创建/storage/emulated/0/TbsReaderTemp！！");
                 boolean mkdir = bsReaderTempFile.mkdir();
-                if(!mkdir){
+                if (!mkdir) {
                     Log.e("TAG", "创建/storage/emulated/0/TbsReaderTemp失败！！！！！");
                 }
             }
